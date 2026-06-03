@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoFlow AI - AI Automation Agency</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ===== Design Tokens (Premium SaaS) ===== */
+    :root {
+      --canvas: #09090b;
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.35);
+      --glass-bg: rgba(15, 15, 20, 0.75);
+      --glass-border: rgba(255, 255, 255, 0.04);
+      --glass-border-hover: rgba(99, 102, 241, 0.3);
+      --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+      --glass-glow-hover: 0 8px 48px rgba(99, 102, 241, 0.18);
+      --border: rgba(255, 255, 255, 0.08);
+      --text-muted: #a1a1aa;
+      --text-body: #d4d4d8;
+      --silver: #e4e4e7;
+      --grid-line: rgba(255, 255, 255, 0.015);
+      --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-spring: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-elastic: cubic-bezier(0.25, 1, 0.5, 1);
+      --title-gradient: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
+      --headline-metallic: linear-gradient(180deg, #ffffff 40%, #a1a1aa 100%);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      height: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(99, 102, 241, 0.2) #09090b;
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #09090b; }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.2);
+      border-radius: 9999px;
+      transition: background 0.3s;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.5); }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: #09090b;
+      color: var(--text-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    body > *:not(.aurora-fluid):not(.ambient-grid):not(#custom-cursor-ring):not(#scroll-progress):not(nav) {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== Volumetric Aurora Fluid (background engine) ===== */
+    .aurora-fluid {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.65;
+      overflow: hidden;
+      contain: strict;
+    }
+
+    .aurora-fluid__layer,
+    .aurora-fluid__orb {
+      position: absolute;
+      inset: -20%;
+      width: 140%;
+      height: 140%;
+      filter: blur(90px);
+      will-change: transform, background;
+      animation: aurora-fluid 28s infinite ease-in-out;
+    }
+
+    .aurora-fluid__orb--violet {
+      animation-duration: 32s;
+      animation-delay: -10s;
+      opacity: 0.9;
+      background: radial-gradient(circle at 65% 35%, rgba(139, 92, 246, 0.05) 0%, transparent 55%);
+    }
+
+    .aurora-fluid__orb--slate {
+      animation-duration: 26s;
+      animation-delay: -16s;
+      animation-direction: alternate;
+      opacity: 0.85;
+      background: radial-gradient(circle at 45% 60%, rgba(100, 116, 139, 0.05) 0%, transparent 50%);
+    }
+
+    @keyframes aurora-fluid {
+      0% {
+        transform: translate(0px, 0px) scale(1);
+        background: radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.04) 0%, transparent 50%);
+      }
+      33% {
+        transform: translate(30px, -50px) scale(1.1);
+        background: radial-gradient(circle at 30% 50%, rgba(99, 102, 241, 0.04) 0%, transparent 50%),
+                    radial-gradient(circle at 70% 40%, rgba(139, 92, 246, 0.06) 0%, transparent 60%);
+      }
+      66% {
+        transform: translate(-20px, 20px) scale(0.95);
+        background: radial-gradient(circle at 60% 20%, rgba(168, 85, 247, 0.05) 0%, transparent 55%),
+                    radial-gradient(circle at 40% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 45%);
+      }
+      100% {
+        transform: translate(0px, 0px) scale(1);
+        background: radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.04) 0%, transparent 50%);
+      }
+    }
+
+    /* Micro-grid depth layer — above aurora, below content */
+    .ambient-grid {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        repeating-linear-gradient(0deg, var(--grid-line) 0, var(--grid-line) 1px, transparent 1px, transparent 50px),
+        repeating-linear-gradient(90deg, var(--grid-line) 0, var(--grid-line) 1px, transparent 1px, transparent 50px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .aurora-fluid__layer,
+      .aurora-fluid__orb {
+        animation: none;
+        transform: none;
+      }
+
+      .aurora-fluid__layer {
+        background: radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.03) 0%, transparent 50%);
+      }
+    }
+
+    /* ===== Glass panel architecture ===== */
+    .glass-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      transition: all 0.3s var(--ease-elastic);
+    }
+
+    .glass-panel:hover {
+      border-color: var(--glass-border-hover);
+      box-shadow: var(--glass-shadow), var(--glass-glow-hover);
+    }
+
+    h1, h2, h3 {
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      line-height: 1.1;
+      background: var(--title-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+    /* Premium metallic headlines */
+    #hero h1,
+    #services .section-header h2,
+    #projects .section-header h2,
+    #tools .section-header h2 {
+      background: var(--headline-metallic);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-copy {
+      position: relative;
+      text-align: center;
+    }
+
+    @media (min-width: 960px) {
+      .hero-copy { text-align: left; }
+    }
+
+    .hero-copy::after {
+      content: '';
+      position: absolute;
+      width: 120%;
+      height: 100%;
+      left: -10%;
+      top: 50%;
+      transform: translateY(-50%);
+      background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.04) 0%, transparent 70%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    a { color: var(--accent); text-decoration: none; transition: color 0.2s var(--ease-spring); }
+    a:hover { color: #818cf8; }
+
+    .container {
+      width: min(1200px, 100%);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .text-gradient { background: var(--title-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+    /* ===== Ambient Lights ===== */
+    .section-ambient {
+      position: relative;
+      isolation: isolate;
+    }
+    .section-ambient::before {
+      content: '';
+      position: absolute;
+      width: min(720px, 90vw);
+      height: min(520px, 70vh);
+      left: 50%;
+      top: 40%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle at center, rgba(99, 102, 241, 0.12) 0%, transparent 65%);
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .section-ambient > .container { position: relative; z-index: 1; }
+
+    /* ===== Navigation ===== */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      z-index: 1000;
+      border-bottom: 1px solid var(--border);
+      background: rgba(9, 9, 11, 0.88);
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 72px;
+      gap: 16px;
+    }
+
+    .logo {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      line-height: 1.1;
+      background: var(--title-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      position: relative;
+      transition: color 0.2s var(--ease-spring);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 100%;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s var(--ease-spring);
+    }
+
+    .nav-links a:hover { color: #fff; }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .cta-nav {
+      background: var(--accent);
+      color: #fff !important;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: transform 0.25s var(--ease-spring), box-shadow 0.25s var(--ease-spring), background 0.25s var(--ease-spring);
+    }
+
+    .cta-nav:hover {
+      background: #4f46e5;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px var(--accent-glow);
+    }
+
+    .cta-nav::after { display: none; }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      height: 2px;
+      width: 24px;
+      background: #fff;
+      margin: 4px 0;
+      border-radius: 2px;
+      transition: 0.3s var(--ease-spring);
+    }
+
+    @media (max-width: 900px) {
+      .nav-links {
+        position: absolute;
+        top: 72px;
+        right: 0;
+        flex-direction: column;
+        align-items: flex-start;
+        width: min(280px, 85vw);
+        padding: 20px 24px 28px;
+        background: rgba(9, 9, 11, 0.96);
+        border-left: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        transform: translateX(100%);
+        transition: transform 0.35s var(--ease-premium);
+      }
+      .nav-links.open { transform: translateX(0); }
+      .hamburger { display: flex; }
+      .cta-nav { display: none; }
+    }
+
+    /* ===== Sections ===== */
+    section {
+      padding: clamp(64px, 10vh, 120px) 0;
+    }
+
+    #contact {
+      padding-bottom: clamp(40px, 6vh, 72px);
+    }
+
+    .section-header {
+      margin-bottom: 48px;
+      text-align: center;
+    }
+
+    .section-header h2 {
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      margin-bottom: 12px;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ===== Reveal Animations ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px) scale(0.97);
+      transition: opacity 0.8s var(--ease-premium), transform 0.8s var(--ease-premium);
+      will-change: opacity, transform;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .bento-item.reveal.visible {
+      transition: opacity 0.8s var(--ease-premium),
+                  transform 0.3s var(--ease-elastic),
+                  border-color 0.3s var(--ease-elastic),
+                  box-shadow 0.3s var(--ease-elastic);
+    }
+
+    /* ===== Hero ===== */
+    #hero {
+      min-height: calc(100vh - 72px);
+      min-height: calc(100dvh - 72px);
+      display: flex;
+      align-items: center;
+      padding-top: 96px;
+      padding-bottom: clamp(48px, 8vh, 80px);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    @media (min-width: 960px) {
+      .hero-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 56px;
+      }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      margin-bottom: 24px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #c7d2fe;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.35);
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 10px #22c55e;
+    }
+
+    #hero h1 {
+      font-size: clamp(2.25rem, 5vw, 3.35rem);
+      margin-bottom: 20px;
+      max-width: 16ch;
+    }
+
+    @media (min-width: 960px) { #hero h1 { max-width: none; } }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      max-width: 52ch;
+    }
+
+    @media (min-width: 960px) {
+      .hero-sub { margin-left: 0; margin-right: 0; }
+    }
+
+    @media (max-width: 959px) {
+      .hero-sub { margin-left: auto; margin-right: auto; }
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    @media (min-width: 960px) { .button-group { justify-content: flex-start; } }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 13px 26px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.25s var(--ease-spring);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 24px rgba(99, 102, 241, 0.35);
+    }
+
+    .btn-primary:hover {
+      background: #4f46e5;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px var(--accent-glow);
+      color: #fff;
+    }
+
+    .btn-ghost {
+      color: #fff;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(99, 102, 241, 0.5);
+      transform: translateY(-2px);
+      color: #fff;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 960px) { .stats { margin: 0; } }
+
+    .stat {
+      padding: 16px;
+      border-radius: 14px;
+      text-align: center;
+    }
+
+    .stat.glass-panel:hover {
+      transform: translateY(-3px);
+    }
+
+    .stat-value {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      line-height: 1.1;
+      background: var(--title-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* ===== Hero engine ambient glow ===== */
+    .hero-visual {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-visual::before {
+      content: '';
+      position: absolute;
+      width: 140%;
+      height: 140%;
+      right: -20%;
+      top: 50%;
+      transform: translateY(-50%);
+      background: radial-gradient(circle at 75% 30%, rgba(99, 102, 241, 0.08) 0%, transparent 60%);
+      filter: blur(70px);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* ===== Recent Work ambient glow ===== */
+    #projects {
+      position: relative;
+      isolation: isolate;
+    }
+
+    #projects::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 65%);
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #projects > .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== Automation Engine ===== */
+    .engine-frame {
+      border-radius: 20px;
+      padding: 8px;
+    }
+
+    .engine-frame.glass-panel:hover {
+      transform: none;
+      border-color: rgba(99, 102, 241, 0.2);
+    }
+
+    .engine-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 12px 16px 4px;
+    }
+
+    .automation-workspace {
+      position: relative;
+      min-height: 360px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .automation-workspace::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(99, 102, 241, 0.1), transparent 70%);
+      pointer-events: none;
+    }
+
+    .automation-lines {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .path-glow {
+      fill: none;
+      stroke: url(#pathStroke);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      opacity: 0.45;
+      filter: blur(2px);
+    }
+
+    .path-core {
+      fill: none;
+      stroke: rgba(129, 140, 248, 0.5);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-dasharray: 6 10;
+      animation: flowDash 1.6s linear infinite;
+    }
+
+    .path-core.path-b { animation-delay: 0.4s; }
+
+    @keyframes flowDash {
+      to { stroke-dashoffset: -32; }
+    }
+
+    .pulse-dot {
+      filter: drop-shadow(0 0 8px rgba(129, 140, 248, 0.9));
+    }
+
+    .automation-nodes {
+      position: relative;
+      z-index: 2;
+      min-height: 340px;
+    }
+
+    .automation-node {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 18px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #fafafa;
+      background: rgba(24, 24, 27, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      white-space: nowrap;
+    }
+
+    .node-icon {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(129, 140, 248, 0.4);
+    }
+
+    .node-1 { top: 20px; left: 16px; }
+    .node-2 {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-color: rgba(129, 140, 248, 0.5);
+      animation: enginePulse 2.4s ease-in-out infinite;
+    }
+    .node-3 { bottom: 20px; right: 16px; }
+
+    @keyframes enginePulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 0 0 0 rgba(99, 102, 241, 0.3); }
+      50% { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 16px 40px rgba(99, 102, 241, 0.25), 0 0 0 8px rgba(99, 102, 241, 0.08); }
+    }
+
+    /* ===== Bento Grid ===== */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .bento-grid {
+        grid-template-columns: repeat(12, 1fr);
+        gap: 20px;
+      }
+    }
+
+    .bento-item {
+      border-radius: 16px;
+      padding: 32px;
+    }
+
+    .bento-item.glass-panel:hover {
+      transform: translateY(-4px);
+    }
+
+    .bento-item h3 {
+      font-size: 1.35rem;
+      margin-bottom: 12px;
+    }
+
+    .bento-item p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+
+    .bento-item p + p { margin-top: 12px; }
+
+    .bento-item .meta {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .bento-item .meta strong {
+      color: #fafafa;
+      font-weight: 700;
+    }
+
+    .bento-item .meta .meta-value {
+      color: #c7d2fe;
+      font-weight: 500;
+    }
+
+    /* Services spans */
+    @media (min-width: 768px) {
+      #services .bento-item:nth-child(1) { grid-column: span 7; }
+      #services .bento-item:nth-child(2) { grid-column: span 5; }
+      #services .bento-item:nth-child(3) { grid-column: span 5; }
+      #services .bento-item:nth-child(4) { grid-column: span 7; }
+    }
+
+    /* Projects spans */
+    @media (min-width: 768px) {
+      #projects .bento-item:nth-child(1) { grid-column: span 8; }
+      #projects .bento-item:nth-child(2) { grid-column: span 4; }
+      #projects .bento-item:nth-child(3) { grid-column: span 12; }
+    }
+
+    /* Testimonials spans */
+    @media (min-width: 768px) {
+      #testimonials .bento-item:nth-child(1) { grid-column: span 6; }
+      #testimonials .bento-item:nth-child(2) { grid-column: span 6; }
+    }
+
+    .testimonial-quote {
+      font-size: 1.05rem;
+      color: var(--silver);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-quote::before {
+      content: '\201C';
+      display: block;
+      font-size: 2.5rem;
+      line-height: 1;
+      background: var(--title-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .author {
+      font-weight: 600;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+
+    .stars {
+      color: #a1a1aa;
+      margin-top: 8px;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+    }
+
+    .bento-note {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      padding-top: 8px;
+    }
+
+    /* ===== Manifesto ===== */
+    #about .manifesto-wrap {
+      display: grid;
+      gap: 48px;
+      align-items: center;
+    }
+
+    @media (min-width: 900px) {
+      #about .manifesto-wrap {
+        grid-template-columns: 1fr 1fr;
+        gap: 64px;
+      }
+    }
+
+    #about .section-title-local {
+      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      text-align: left;
+      margin-bottom: 32px;
+    }
+
+    .manifesto {
+      list-style: none;
+    }
+
+    .manifesto li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--silver);
+    }
+
+    .manifesto li:last-child { border-bottom: none; }
+
+    .manifesto li::before {
+      content: attr(data-number);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      min-width: 3rem;
+    }
+
+    .manifesto-body p {
+      color: #e4e4e7;
+      font-size: 1.2rem;
+      line-height: 1.8;
+      font-weight: 400;
+      max-width: 600px;
+    }
+
+    /* ===== Tools ===== */
+    .badge-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .tool-badge {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #a1a1aa;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: color 0.2s var(--ease-spring), border-color 0.2s var(--ease-spring), transform 0.2s var(--ease-spring);
+    }
+
+    .tool-badge:hover {
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* ===== Contact ===== */
+    #contact .contact-shell {
+      display: flex;
+      justify-content: center;
+    }
+
+    .contact-card {
+      width: 100%;
+      max-width: 640px;
+      text-align: center;
+      padding: clamp(40px, 6vw, 56px);
+      border-radius: 20px;
+    }
+
+    .contact-card.glass-panel:hover {
+      transform: translateY(-2px);
+    }
+
+    .contact-card h2 { margin-bottom: 16px; font-size: clamp(1.75rem, 4vw, 2.5rem); }
+
+    .contact-card > p {
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      margin: 28px 0 24px;
+      padding: 15px 36px;
+      background: var(--accent);
+      color: #fff !important;
+      font-weight: 700;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transition: all 0.25s var(--ease-spring);
+      box-shadow: 0 8px 32px var(--accent-glow);
+    }
+
+    .cta-btn:hover {
+      background: #4f46e5;
+      transform: translateY(-2px);
+      color: #fff !important;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      padding: 28px 0 40px;
+      margin-bottom: 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: #71717a;
+      font-size: 0.88rem;
+    }
+
+    footer p + p { margin-top: 6px; }
+    footer a { color: #a1a1aa; }
+
+    /* ===== Scroll progress bar ===== */
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      z-index: 9999;
+      background: linear-gradient(90deg, #6366f1, #a855f7);
+      box-shadow: 0 0 12px rgba(99, 102, 241, 0.6);
+      pointer-events: none;
+    }
+
+    /* ===== Fluid glass cursor ring ===== */
+    #custom-cursor-ring {
+      width: 24px;
+      height: 24px;
+      border: 1px solid rgba(99, 102, 241, 0.5);
+      border-radius: 50%;
+      position: fixed;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 99999;
+      transition: width 0.2s, height 0.2s, border-color 0.2s, background-color 0.2s;
+      background-color: rgba(99, 102, 241, 0.02);
+      left: -100px;
+      top: -100px;
+    }
+
+    @media (pointer: coarse) {
+      #custom-cursor-ring { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="custom-cursor-ring" aria-hidden="true"></div>
+
+  <div class="aurora-fluid" id="aurora-fluid" aria-hidden="true">
+    <div class="aurora-fluid__layer"></div>
+    <div class="aurora-fluid__orb aurora-fluid__orb--violet" aria-hidden="true"></div>
+    <div class="aurora-fluid__orb aurora-fluid__orb--slate" aria-hidden="true"></div>
+  </div>
+  <div class="ambient-grid" aria-hidden="true"></div>
+
+  <nav>
+    <div class="container navbar">
+      <a href="#" class="logo" aria-label="AutoFlow AI - Home">AutoFlow AI</a>
+      <ul class="nav-links">
+        <li><a href="#about">Our Focus</a></li>
+        <li><a href="#services">Solutions</a></li>
+        <li><a href="#projects">Case Studies</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a class="cta-nav" href="https://calendly.com/faizkhannn283/30min" target="_blank" rel="noopener">Book a Call</a>
+      <div class="hamburger" aria-label="Toggle menu" role="button" tabindex="0">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <section id="hero" class="section-ambient">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-copy reveal">
+          <div class="hero-badge">Now accepting new partnerships</div>
+          <h1>We help businesses save 20+ hours per week with AI Automation</h1>
+          <p class="hero-sub">AutoFlow AI architects production-grade n8n, Make, and Zapier workflows for agencies, coaches, and e-commerce brands ready to scale without headcount.</p>
+          <div class="button-group">
+            <a class="btn btn-primary" href="https://calendly.com/faizkhannn283/30min" target="_blank" rel="noopener">Schedule an Automation Audit</a>
+            <a class="btn btn-ghost" href="#projects">View Case Studies</a>
+          </div>
+          <div class="stats">
+            <div class="stat glass-panel">
+              <span class="stat-value">20+</span>
+              <span class="stat-label">hours saved per client</span>
+            </div>
+            <div class="stat glass-panel">
+              <span class="stat-value">10+</span>
+              <span class="stat-label">automations built</span>
+            </div>
+            <div class="stat glass-panel">
+              <span class="stat-value">3+</span>
+              <span class="stat-label">niches served</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal">
+          <div class="engine-frame glass-panel">
+            <div class="engine-label">Automation Workflow Engine</div>
+            <div class="automation-workspace" aria-label="Live automation workflow visualization">
+              <svg class="automation-lines" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="pathStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#6366f1"/>
+                    <stop offset="50%" stop-color="#a78bfa"/>
+                    <stop offset="100%" stop-color="#38bdf8"/>
+                  </linearGradient>
+                  <radialGradient id="pulseGradient" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#ffffff"/>
+                    <stop offset="40%" stop-color="#a5b4fc"/>
+                    <stop offset="100%" stop-color="#6366f1"/>
+                  </radialGradient>
+                </defs>
+                <path id="flowPathA" class="path-glow" d="M 100 48 C 100 100, 200 80, 200 148" />
+                <path id="flowPathB" class="path-glow" d="M 200 172 C 200 220, 300 248, 300 272" />
+                <path class="path-core path-a" d="M 100 48 C 100 100, 200 80, 200 148" />
+                <path class="path-core path-b" d="M 200 172 C 200 220, 300 248, 300 272" />
+                <circle class="pulse-dot" r="5" fill="url(#pulseGradient)">
+                  <animateMotion dur="2.2s" repeatCount="indefinite" calcMode="linear">
+                    <mpath href="#flowPathA"/>
+                  </animateMotion>
+                </circle>
+                <circle class="pulse-dot" r="5" fill="url(#pulseGradient)">
+                  <animateMotion dur="2.2s" begin="0.6s" repeatCount="indefinite" calcMode="linear">
+                    <mpath href="#flowPathB"/>
+                  </animateMotion>
+                </circle>
+              </svg>
+              <div class="automation-nodes">
+                <div class="automation-node node-1">
+                  <span class="node-icon" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2">
+                      <circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+                    </svg>
+                  </span>
+                  <span>Webhook Trigger</span>
+                </div>
+                <div class="automation-node node-2">
+                  <span class="node-icon" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2">
+                      <rect x="5" y="5" width="14" height="14" rx="2"/><path d="M9 10h6M9 14h4"/>
+                    </svg>
+                  </span>
+                  <span>Groq AI Node</span>
+                </div>
+                <div class="automation-node node-3">
+                  <span class="node-icon" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a5b4fc" stroke-width="2">
+                      <path d="M4 6h16v12H4z"/><path d="M4 8l8 6 8-6"/>
+                    </svg>
+                  </span>
+                  <span>Gmail Outreach / CRM Sync</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="container manifesto-wrap">
+      <div class="manifesto-pillars reveal">
+        <h2 class="section-title-local text-gradient">Operating Manifesto</h2>
+        <ul class="manifesto">
+          <li data-number="01">Efficiency First</li>
+          <li data-number="02">Seamless Integrations</li>
+          <li data-number="03">Scalable Architecture</li>
+        </ul>
+      </div>
+      <div class="manifesto-body reveal">
+        <p>AutoFlow AI is an automation agency with a track record of delivering reliable, end-to-end workflows that free up valuable time for businesses. We specialize in designing, building, and maintaining automations on platforms such as n8n, Make.com, and Zapier.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="container">
+      <header class="section-header reveal">
+        <h2>What I Build For You</h2>
+        <p>Production-grade automations engineered for speed, reliability, and measurable ROI.</p>
+      </header>
+      <div class="bento-grid">
+        <article class="bento-item bento-card glass-panel reveal">
+          <h3>AI Lead Generation Bot</h3>
+          <p>Automated lead qualification and email outreach that runs 24/7 without manual work — scoring, routing, and nurturing prospects while you focus on closing.</p>
+        </article>
+        <article class="bento-item bento-card glass-panel reveal">
+          <h3>CRM Automation</h3>
+          <p>Auto-sync leads, contacts, and deals across your entire sales pipeline with zero duplicate records.</p>
+        </article>
+        <article class="bento-item bento-card glass-panel reveal">
+          <h3>Reporting Automation</h3>
+          <p>Automated daily and weekly reports delivered to your inbox — no spreadsheets, no manual exports.</p>
+        </article>
+        <article class="bento-item bento-card glass-panel reveal">
+          <h3>Workflow Integration</h3>
+          <p>Connect CRM, email, calendar, and Slack into one seamless, event-driven system built for scale.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="container">
+      <header class="section-header reveal">
+        <h2>Recent Work</h2>
+        <p>Real systems deployed for agencies and operators — with measurable time savings.</p>
+      </header>
+      <div class="bento-grid">
+        <article class="bento-item bento-card glass-panel reveal">
+          <h3>AI Lead Generation &amp; Outreach System</h3>
+          <p>Built a fully automated system that reads leads from Google Sheets, scores them with AI, sends personalized cold emails, and follows up automatically on Day 3, 7, and 14.</p>
+          <p class="meta"><strong>Tags:</strong> <span class="meta-value">n8n, Groq AI, Node.js, Nodemailer</span></p>
+          <p class="meta"><strong>Result:</strong> <span class="meta-value">20 leads contacted per day · 4+ hours saved daily</span></p>
+        </article>
+        <article class="bento-item bento-card glass-panel reveal">
+          <h3>AI Lead Qualification Bot</h3>
+          <p>Processes hundreds of leads daily, scores fit with AI, and routes hot prospects directly to sales.</p>
+          <p class="meta"><strong>Tags:</strong> <span class="meta-value">Make.com, Apollo.io, Groq AI</span></p>
+          <p class="meta"><strong>Result:</strong> <span class="meta-value">3+ hours of manual work eliminated daily</span></p>
+        </article>
+        <article class="bento-item bento-card glass-panel reveal">
+          <h3>Automated Reporting Pipeline</h3>
+          <p>Connected data sources to auto-generate and deliver daily performance reports via email — zero manual data pulling.</p>
+          <p class="meta"><strong>Tags:</strong> <span class="meta-value">n8n, Google Sheets, Nodemailer</span></p>
+          <p class="meta"><strong>Result:</strong> <span class="meta-value">Reports delivered every morning, automatically</span></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools">
+    <div class="container">
+      <header class="section-header reveal">
+        <h2>Tools I Work With</h2>
+      </header>
+      <div class="badge-grid reveal">
+        <span class="tool-badge">n8n</span>
+        <span class="tool-badge">Make.com</span>
+        <span class="tool-badge">Zapier</span>
+        <span class="tool-badge">Groq AI</span>
+        <span class="tool-badge">Google Gemini</span>
+        <span class="tool-badge">Apollo.io</span>
+        <span class="tool-badge">Nodemailer</span>
+        <span class="tool-badge">Google Sheets</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="testimonials">
+    <div class="container">
+      <header class="section-header reveal">
+        <h2>What Clients Say</h2>
+      </header>
+      <div class="bento-grid">
+        <article class="bento-item bento-card glass-panel reveal">
+          <p class="testimonial-quote">AutoFlow AI consistently delivers high-quality automations that save us countless hours.</p>
+          <div class="author">E-Commerce Founder — ScaleMedia</div>
+          <div class="stars">★★★★★</div>
+        </article>
+        <article class="bento-item bento-card glass-panel reveal">
+          <p class="testimonial-quote">Their workflow integrations are seamless and transformed our processes.</p>
+          <div class="author">Operations Director — Apex Agencies</div>
+          <div class="stars">★★★★☆</div>
+        </article>
+        <p class="bento-note reveal">More testimonials coming soon</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section-ambient">
+    <div class="container contact-shell">
+      <div class="contact-card glass-panel reveal">
+        <h2>Ready to Automate?</h2>
+        <p>Schedule a free 20-minute audit and discover how we can transform your operations.</p>
+        <a class="cta-btn" href="https://calendly.com/faizkhannn283/30min" target="_blank" rel="noopener">Book a Free Strategy Call</a>
+        <div class="contact-links">
+          <p>Email: <a href="mailto:faizkhannn283@gmail.com">faizkhannn283@gmail.com</a></p>
+          <p>LinkedIn: <a href="https://www.linkedin.com/in/fatehab-khan-8392b03b9/" target="_blank" rel="noopener">LinkedIn Profile</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>Built by <strong>AutoFlow AI</strong> — AI Automation Agency</p>
+      <p>© 2026</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const hamburger = document.querySelector('.hamburger');
+      const navLinks = document.querySelector('.nav-links');
+
+      const toggleMenu = () => navLinks.classList.toggle('open');
+      hamburger.addEventListener('click', toggleMenu);
+      hamburger.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleMenu();
+        }
+      });
+
+      navLinks.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => navLinks.classList.remove('open'));
+      });
+
+      const revealObserver = new IntersectionObserver(
+        (entries, observer) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+      );
+
+      document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+
+      document.querySelectorAll('.bento-grid').forEach((grid) => {
+        const items = grid.querySelectorAll('.bento-item.reveal, .bento-note.reveal');
+        items.forEach((item, index) => {
+          item.style.transitionDelay = `${index * 90}ms`;
+        });
+      });
+
+      const heroBlocks = document.querySelectorAll('#hero .reveal');
+      heroBlocks.forEach((block, index) => {
+        block.style.transitionDelay = `${index * 120}ms`;
+      });
+
+      initScrollProgress();
+      initCustomCursor();
+    });
+
+    function initCustomCursor() {
+      const ring = document.getElementById('custom-cursor-ring');
+      if (!ring || !window.matchMedia('(pointer: fine)').matches) {
+        if (ring) ring.style.display = 'none';
+        return;
+      }
+
+      let mouseX = -100;
+      let mouseY = -100;
+      let ringX = -100;
+      let ringY = -100;
+
+      window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+
+      function tick() {
+        ringX += (mouseX - ringX) * 0.12;
+        ringY += (mouseY - ringY) * 0.12;
+        ring.style.left = ringX + 'px';
+        ring.style.top = ringY + 'px';
+        requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+
+      const interactiveElements = document.querySelectorAll('a, button, .bento-card');
+      interactiveElements.forEach((el) => {
+        el.addEventListener('mouseenter', () => {
+          ring.style.width = '48px';
+          ring.style.height = '48px';
+          ring.style.borderColor = '#6366f1';
+          ring.style.backgroundColor = 'rgba(99, 102, 241, 0.1)';
+        });
+        el.addEventListener('mouseleave', () => {
+          ring.style.width = '24px';
+          ring.style.height = '24px';
+          ring.style.borderColor = 'rgba(99, 102, 241, 0.5)';
+          ring.style.backgroundColor = 'rgba(99, 102, 241, 0.02)';
+        });
+      });
+    }
+
+    function initScrollProgress() {
+      const bar = document.createElement('div');
+      bar.id = 'scroll-progress';
+      bar.setAttribute('aria-hidden', 'true');
+      document.body.prepend(bar);
+
+      const update = () => {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        bar.style.width = `${Math.min(100, Math.max(0, pct))}%`;
+      };
+
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    }
+
+  </script>
+</body>
+</html>
